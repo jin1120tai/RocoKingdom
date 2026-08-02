@@ -1,4 +1,4 @@
-def rock_compute_() :
+def roco_attribute_() :
     z_to_w = {
         0  : "普通" ,
         1  : "草" ,
@@ -334,7 +334,7 @@ def rock_compute_() :
 
 
 while 1 :
-    rock_compute_()
+    roco_attribute_()
     mm = input('按任意键继续，仅按enter以结束')
     if mm == '' :
         print('---运行结束---')
