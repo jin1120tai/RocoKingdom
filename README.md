@@ -98,7 +98,7 @@ python RocoAttribute.py
 | 0  | 普通 | `p` / `pt` | 9  | 毒   | `du` |
 | 1  | 草   | `c` / `cao`| 10 | 虫   | `ch` / `chong` |
 | 2  | 火   | `h` / `huo`| 11 | 武   | `w` / `wu` |
-| 3  | 水   | `s` / `shui`| 12 | 翼   | `y` / `yi` / `f` |
+| 3  | 水   | `s` / `shui`| 12 | 翼   | `y` / `E` / `yi` / `f` |
 | 4  | 光   | `g` / `guang`| 13 | 萌   | `m` / `meng` |
 | 5  | 地   | `d` / `di` | 14 | 幽   | `you` / `yo` / `u` |
 | 6  | 冰   | `b` / `bing`| 15 | 恶   | `e` |
