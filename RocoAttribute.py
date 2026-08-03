@@ -241,6 +241,17 @@ def roco_attribute_() :
 
         return dk_a
 
+    # 显示宽度（中文/全角符号算 2），用于输出对齐
+    def _w(s) :
+        w = 0
+        for c in s :
+            w += 2 if ord(c) > 127 else 1
+        return w
+
+    # 把 s 用空格填充到指定显示宽度
+    def _pad(s , n) :
+        return s + ' ' * (n - _w(s))
+
     while 1 :
         s_main , s_other , *_ = (input("请输入属性：").split() + [""])[:2]
 
@@ -253,32 +264,22 @@ def roco_attribute_() :
 
     if s_other == '' :
 
-        str1 += '正在搜索：\t【' + z_to_w[w_to_z[s_main]] + '】\n'
+        str1 += _pad('正在搜索：' , 10) + '【' + z_to_w[w_to_z[s_main]] + '】\n'
 
         d_kz = kz(w_to_z[s_main])
         d_bdk = bdk(w_to_z[s_main])
         d_bkz = bkz(w_to_z[s_main])
         d_dk = dk(w_to_z[s_main])
 
-        str1 += '克  制：\t\t'
-        for i in d_kz :
-            str1 += z_to_w[i] + ' '
-
-        str1 += '\n被抵抗：\t\t'
-        for i in d_bdk :
-            str1 += z_to_w[i] + ' '
-
-        str1 += '\n被克制：\t\t'
-        for i in d_bkz :
-            str1 += z_to_w[i] + ' '
-
-        str1 += '\n抵  抗：\t\t'
-        for i in d_dk :
-            str1 += z_to_w[i] + ' '
+        str1 += _pad('克  制：' , 10) + ' '.join(z_to_w[i] for i in d_kz) + '\n'
+        str1 += _pad('被抵抗：' , 10) + ' '.join(z_to_w[i] for i in d_bdk) + '\n'
+        str1 += _pad('被克制：' , 10) + ' '.join(z_to_w[i] for i in d_bkz) + '\n'
+        str1 += _pad('抵  抗：' , 10) + ' '.join(z_to_w[i] for i in d_dk)
 
     else :
 
-        str1 += '正在搜索：\t【' + z_to_w[w_to_z[s_main]] + '】\t\t【' + z_to_w[w_to_z[s_other]] + '】\n'
+        nm = '【' + z_to_w[w_to_z[s_main]] + '】'
+        no = '【' + z_to_w[w_to_z[s_other]] + '】'
 
         d_kz1 = kz(w_to_z[s_main])
         d_bdk1 = bdk(w_to_z[s_main])
@@ -290,52 +291,32 @@ def roco_attribute_() :
         d_bkz2 = bkz(w_to_z[s_other])
         d_dk2 = dk(w_to_z[s_other])
 
-        str1 += '克  制：\t\t'
-        for i in d_kz1 :
-            str1 += z_to_w[i] + ' '
-        str1 += '\t'
-        for j in d_kz2 :
-            str1 += z_to_w[j] + ' '
+        # 两列行（克制/被抵抗）第一列内容，取最大宽度对齐第二列
+        b_kz = ' '.join(z_to_w[i] for i in d_kz1)
+        b_bdk = ' '.join(z_to_w[i] for i in d_bdk1)
+        bw = max(_w(nm) , _w(b_kz) , _w(b_bdk)) + 2
 
-        str1 += '\n被抵抗：\t\t'
-        for i in d_bdk1 :
-            str1 += z_to_w[i] + ' '
-        str1 += '\t'
-        for j in d_bdk2 :
-            str1 += z_to_w[j] + ' '
+        str1 += _pad('正在搜索：' , 10) + _pad(nm , bw) + no + '\n'
+        str1 += _pad('克  制：' , 10) + _pad(b_kz , bw) + ' '.join(z_to_w[i] for i in d_kz2) + '\n'
+        str1 += _pad('被抵抗：' , 10) + _pad(b_bdk , bw) + ' '.join(z_to_w[i] for i in d_bdk2) + '\n'
 
         del_ = ((set(bkz(w_to_z[s_main])) & set(dk(w_to_z[s_other])))
                 | (set(dk(w_to_z[s_main])) & set(bkz(w_to_z[s_other]))))
 
-        str1 += '\n被克制：\t\t'
         do_bkz = sorted(list((set(d_bkz1) | set(d_bkz2)) - del_))
         de_bkz = sorted(list(set(d_bkz1) & set(d_bkz2)))
-        for i in de_bkz :
-            str1 += z_to_w[i] + ' '
-
+        s_bkz = ' '.join(z_to_w[i] for i in de_bkz)
         if de_bkz :
-            str1 += '<- '
+            s_bkz += ' <- '
+        s_bkz += ' '.join(z_to_w[i] for i in do_bkz)
+        str1 += _pad('被克制：' , 10) + s_bkz + '\n'
 
-        for i in do_bkz :
-            str1 += z_to_w[i] + ' '
-
-        str1 += '\n抵  抗：\t\t'
         do_dk = sorted(list((set(d_dk1) | set(d_dk2)) - del_))
         de_dk = sorted(list(set(d_dk1) & set(d_dk2)))
-        for i in de_dk :
-            str1 += z_to_w[i] + ' '
-
+        s_dk = ' '.join(z_to_w[i] for i in de_dk)
         if de_dk :
-            str1 += '<- '
-        for i in do_dk :
-            str1 += z_to_w[i] + ' '
+            s_dk += ' <- '
+        s_dk += ' '.join(z_to_w[i] for i in do_dk)
+        str1 += _pad('抵  抗：' , 10) + s_dk
 
     print(str1)
-
-
-while 1 :
-    roco_attribute_()
-    mm = input('按任意键继续，仅按enter以结束')
-    if mm == '' :
-        print('---运行结束---')
-        break
